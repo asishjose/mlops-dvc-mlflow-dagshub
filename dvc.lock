@@ -1,0 +1,79 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/raw/clickstream.csv
+      hash: md5
+      md5: d89e5e18eeabfb09cf5948b61a8e37ce
+      size: 172986
+    - path: src/preprocess.py
+      hash: md5
+      md5: 6bb84a9864bd469784b37f7224841067
+      size: 1418
+    params:
+      params.yaml:
+        preprocess.random_state: 42
+        preprocess.test_size: 0.2
+    outs:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 81621fdcb8389e3557d5c400bf4317ae
+      size: 114006
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d7467075607ad15cb30a47b3e37049e2
+      size: 22928
+    - path: data/processed/train.csv
+      hash: md5
+      md5: bece311c193442fe5da737a530af6cef
+      size: 91202
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d7467075607ad15cb30a47b3e37049e2
+      size: 22928
+    - path: data/processed/train.csv
+      hash: md5
+      md5: bece311c193442fe5da737a530af6cef
+      size: 91202
+    - path: src/train.py
+      hash: md5
+      md5: f8892882813096ca15e03387fda68ac0
+      size: 4388
+    params:
+      params.yaml:
+        train.C: 1.0
+        train.max_iter: 1000
+        train.solver: liblinear
+    outs:
+    - path: metrics/scores.json
+      hash: md5
+      md5: 0a23184b327c8facc7b9cca919189980
+      size: 77
+    - path: models/lr_model.pkl
+      hash: md5
+      md5: 3f121b9553f0bc53e5217791f25890bf
+      size: 1005
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: d7467075607ad15cb30a47b3e37049e2
+      size: 22928
+    - path: models/lr_model.pkl
+      hash: md5
+      md5: 3f121b9553f0bc53e5217791f25890bf
+      size: 1005
+    - path: src/evaluate.py
+      hash: md5
+      md5: ac42d50a345f80d5982bcc059676a514
+      size: 2164
+    outs:
+    - path: metrics/confusion_matrix.json
+      hash: md5
+      md5: eec4aa5e4ee356fd711ccbc162873409
+      size: 23
