@@ -1,0 +1,39 @@
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - src/preprocess.py
+      - data/raw/clickstream.csv
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+      - data/processed/features.csv
+    params:
+      - preprocess.test_size
+      - preprocess.random_state
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - data/processed/train.csv
+      - data/processed/test.csv
+    outs:
+      - models/lr_model.pkl
+    params:
+      - train.C
+      - train.solver
+      - train.max_iter
+    metrics:
+      - metrics/scores.json:
+          cache: false
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - models/lr_model.pkl
+      - data/processed/test.csv
+    metrics:
+      - metrics/confusion_matrix.json:
+          cache: false
