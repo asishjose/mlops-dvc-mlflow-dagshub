@@ -3,6 +3,6 @@ preprocess:
   random_state: 42
 
 train:
-  C: 1.0
+  C: 0.1
   solver: liblinear
   max_iter: 1000

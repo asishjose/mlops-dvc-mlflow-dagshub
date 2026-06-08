@@ -45,17 +45,17 @@ stages:
       size: 4659
     params:
       params.yaml:
-        train.C: 1.0
+        train.C: 0.1
         train.max_iter: 1000
         train.solver: liblinear
     outs:
     - path: metrics/scores.json
       hash: md5
-      md5: a28fc8b4b41151dbc147aec2da51d9a1
+      md5: 82eedd2fa1ce91c655617d2cc504c957
       size: 77
     - path: models/lr_model.pkl
       hash: md5
-      md5: 26228c62d70fc15613c2db9b1c485b12
+      md5: cd9e2452e8aaed63ded26aa0afa84eb8
       size: 1005
   evaluate:
     cmd: python src/evaluate.py
@@ -66,7 +66,7 @@ stages:
       size: 22927
     - path: models/lr_model.pkl
       hash: md5
-      md5: 26228c62d70fc15613c2db9b1c485b12
+      md5: cd9e2452e8aaed63ded26aa0afa84eb8
       size: 1005
     - path: src/evaluate.py
       hash: md5
@@ -75,5 +75,5 @@ stages:
     outs:
     - path: metrics/confusion_matrix.json
       hash: md5
-      md5: b9767de7a5600e1744d8313a1b4bdda5
+      md5: f34fbb352e5d06c40a93bbf9d0d9b720
       size: 23
