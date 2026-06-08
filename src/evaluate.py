@@ -49,8 +49,11 @@ def main():
     print("Metrics:", metrics)
 
     # log to MLflow evaluation run
+    mlflow.set_tracking_uri("https://dagshub.com/asishjose/mlops-dvc-mlflow-dagshub.mlflow")
     mlflow.set_experiment("buysignal-purchase-intent")
-    with mlflow.start_run(run_name="evaluation"):
+    with open("metrics/run_id.txt") as f:
+        train_run_id = f.read().strip()
+    with mlflow.start_run(run_id=train_run_id):
         mlflow.log_metrics(metrics)
         mlflow.set_tag("stage", "evaluation")
 

@@ -62,6 +62,7 @@ def compute_metrics(model, X_test, y_test) -> dict:
 def main():
     X_train, y_train, X_test, y_test = load_data()
 
+    mlflow.set_tracking_uri("https://dagshub.com/asishjose/mlops-dvc-mlflow-dagshub.mlflow")
     mlflow.set_experiment("buysignal-purchase-intent")
 
     with mlflow.start_run(run_name=f"lr-C{TRAIN_PARAMS['C']}"):
@@ -87,8 +88,12 @@ def main():
         print(classification_report(y_test, model.predict(X_test)))
 
         # ── log model to MLflow ────────────────────────────────────────
-        mlflow.sklearn.log_model(model, artifact_path="lr_model")
-
+        mlflow.sklearn.log_model(
+            model,
+            artifact_path="lr_model",
+            registered_model_name="buysignal-lr-model",
+        )
+        
         # ── tie MLflow run to exact Git + DVC state ────────────────────
         git_commit = get_git_commit()
         mlflow.set_tag("git_commit", git_commit)
@@ -106,6 +111,8 @@ def main():
             json.dump(metrics, f, indent=2)
 
         run_id = mlflow.active_run().info.run_id
+        with open("metrics/run_id.txt", "w") as f:
+            f.write(run_id)
         print(f"\nMLflow run_id: {run_id}")
         print(f"Git commit:    {git_commit}")
 
